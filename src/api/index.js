@@ -1,0 +1,22 @@
+/*
+ * @Author: Lee && lsh133417@163.com
+ * @Date: 2022-08-11 17:00:02
+ * @LastEditors: Lee && lsh133417@163.com
+ * @LastEditTime: 2022-08-11 17:01:36
+ * @FilePath: \shangpinghui-bs\src\api\index.js
+ * @Description:
+ * Copyright (c) 2022 by Lee email: lsh133417@163.com, All Rights Reserved.
+ */
+// 将四个模块请求的接口函数统一暴露
+import * as trademark from "./product/tradeMark";
+import * as attr from "./product/attr";
+import * as spu from "./product/spu";
+import * as sku from "./product/sku";
+
+// 对外暴露
+export default {
+  trademark,
+  attr,
+  spu,
+  sku,
+};
