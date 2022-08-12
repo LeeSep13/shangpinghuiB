@@ -2,7 +2,7 @@
  * @Author: Lee && lsh133417@163.com
  * @Date: 2022-08-11 16:21:47
  * @LastEditors: Lee && lsh133417@163.com
- * @LastEditTime: 2022-08-12 11:42:45
+ * @LastEditTime: 2022-08-12 11:01:34
  * @FilePath: \shangpinghui-bs\src\views\product\tradeMark\index.vue
  * @Description:
  * Copyright (c) 2022 by Lee email: lsh133417@163.com, All Rights Reserved.
@@ -23,7 +23,7 @@
       <el-table-column prop="tmName" label="操作">
         <template slot-scope="{row,$index}">
           <el-button type="waring" icon="el-icon-edit" size="mini" @click="updateTradeMark(row)">修改</el-button>
-          <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteTradeMark(row)">删除</el-button>
+          <el-button type="danger" icon="el-icon-delete" size="mini">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -35,7 +35,7 @@
     <!-- 对话框 -->
     <el-dialog :title="tmForm.id ? '修改品牌' : '添加品牌'" :visible.sync="dialogFormVisible">
       <!-- form表单 :model属性的作用是把表单的数据收集到它对应的对象身上，将来表单验证，也需要这个属性-->
-      <el-form style="width:80%" :model="tmForm" :rules="rules" ref="ruleForm">
+      <el-form style="width:80%" :model="tmForm" :rules="rules">
         <el-form-item label="品牌名称" label-width="100px" prop="tmName">
           <el-input v-model="tmForm.tmName" autocomplete="off"></el-input>
         </el-form-item>
@@ -152,55 +152,20 @@ export default {
       return isJPG && isLt2M;
     },
     // 添加按钮（添加品牌|修改品牌）
-    addOrUpdateTradeMark() {
-      // 当全部验证字段通过，再去书写服务器
-      this.$refs.ruleForm.validate(async (success) => {
-        // 如果全部字段符合条件
-        if (success) {
-          this.dialogFormVisible = false;
-          // 发请求（添加品牌|修改品牌）
-          let result = await this.$API.trademark.reqAddOrUpdateTradeMark(this.tmForm);
-          if (result.code == 200) {
-            // 弹出信息：添加品牌成功，修改品牌成功
-            this.$message({
-              message: this.tmForm.id ? '修改品牌成功' : '添加品牌成功',
-              type: 'success'
-            })
-            // 添加或者修改品牌成功以后，需要再次获取品牌列表进行提示
-            // 如果添加品牌，停留在第一页，修改品牌应该留在当前页面
-            this.getPageList(this.tmForm.id ? this.page : 1);
-          }
-        } else {
-          console.log('error submit!!');
-          return false;
-        }
-      })
-    },
-    // 删除品牌的操作
-    deleteTradeMark(row) {
-      // 弹框
-      this.$confirm(`你确定删除${row.tmName}?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(async () => {
-        // 当用户点击确定按钮的时候触发
-        // 向服务器发请求
-        let result = await this.$API.trademark.reqDeleteTradeMark(row.id);
-        if (result.code == 200) {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
-          this.getPageList(this.list.length > 1 ? this.page : this.page - 1);
-        }
-      }).catch(() => {
-        // 当用户点击取消按钮的时候触发
+    async addOrUpdateTradeMark() {
+      this.dialogFormVisible = false;
+      // 发请求（添加品牌|修改品牌）
+      let result = await this.$API.trademark.reqAddOrUpdateTradeMark(this.tmForm);
+      if (result.code == 200) {
+        // 弹出信息：添加品牌成功，修改品牌成功
         this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });
-      });
+          message: this.tmForm.id ? '修改品牌成功' : '添加品牌成功',
+          type: 'success'
+        })
+        // 添加或者修改品牌成功以后，需要再次获取品牌列表进行提示
+        // 如果添加品牌，停留在第一页，修改品牌应该留在当前页面
+        this.getPageList(this.tmForm.id ? this.page : 1);
+      }
     }
   },
 };

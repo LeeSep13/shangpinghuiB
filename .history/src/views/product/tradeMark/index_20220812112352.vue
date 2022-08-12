@@ -2,7 +2,7 @@
  * @Author: Lee && lsh133417@163.com
  * @Date: 2022-08-11 16:21:47
  * @LastEditors: Lee && lsh133417@163.com
- * @LastEditTime: 2022-08-12 11:42:45
+ * @LastEditTime: 2022-08-12 11:23:52
  * @FilePath: \shangpinghui-bs\src\views\product\tradeMark\index.vue
  * @Description:
  * Copyright (c) 2022 by Lee email: lsh133417@163.com, All Rights Reserved.
@@ -183,17 +183,12 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(async () => {
+      }).then(() => {
         // 当用户点击确定按钮的时候触发
-        // 向服务器发请求
-        let result = await this.$API.trademark.reqDeleteTradeMark(row.id);
-        if (result.code == 200) {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
-          this.getPageList(this.list.length > 1 ? this.page : this.page - 1);
-        }
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
       }).catch(() => {
         // 当用户点击取消按钮的时候触发
         this.$message({

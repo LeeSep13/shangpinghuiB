@@ -2,7 +2,7 @@
  * @Author: Lee && lsh133417@163.com
  * @Date: 2022-08-11 16:21:47
  * @LastEditors: Lee && lsh133417@163.com
- * @LastEditTime: 2022-08-12 11:42:45
+ * @LastEditTime: 2022-08-12 11:28:10
  * @FilePath: \shangpinghui-bs\src\views\product\tradeMark\index.vue
  * @Description:
  * Copyright (c) 2022 by Lee email: lsh133417@163.com, All Rights Reserved.
@@ -192,7 +192,7 @@ export default {
             type: 'success',
             message: '删除成功!'
           });
-          this.getPageList(this.list.length > 1 ? this.page : this.page - 1);
+          this.getPageList();
         }
       }).catch(() => {
         // 当用户点击取消按钮的时候触发
