@@ -2,7 +2,7 @@
  * @Author: Lee && lsh133417@163.com
  * @Date: 2022-08-11 16:21:47
  * @LastEditors: Lee && lsh133417@163.com
- * @LastEditTime: 2022-08-13 21:13:59
+ * @LastEditTime: 2022-08-13 21:12:57
  * @FilePath: \shangpinghui-bs\src\views\product\attr\index.vue
  * @Description:
  * Copyright (c) 2022 by Lee email: lsh133417@163.com, All Rights Reserved.
@@ -234,28 +234,29 @@ export default {
     // 删除属性
     deleteAttr(row) {
       // 弹框
-      this.$confirm(`你确定删除${row.attrName}?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(async () => {
-        // 当用户点击确定按钮的时候触发
-        // 向服务器发请求
-        let result = await this.$API.attr.reqDeleteAttr(row.id);
-        if (result.code == 200) {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
-          this.getAttrList();
-        }
-      }).catch(() => {
-        // 当用户点击取消按钮的时候触发
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });
-      });
+      // this.$confirm(`你确定删除${row.valueName}?`, '提示', {
+      //   confirmButtonText: '确定',
+      //   cancelButtonText: '取消',
+      //   type: 'warning'
+      // }).then(async () => {
+      //   // 当用户点击确定按钮的时候触发
+      //   // 向服务器发请求
+      //   let result = await this.$API.attr.reqDeleteAttr(row.id);
+      //   if (result.code == 200) {
+      //     this.$message({
+      //       type: 'success',
+      //       message: '删除成功!'
+      //     });
+      //     this.getAttrList();
+      //   }
+      // }).catch(() => {
+      //   // 当用户点击取消按钮的时候触发
+      //   this.$message({
+      //     type: 'info',
+      //     message: '已取消删除'
+      //   });
+      // });
+      console.log(row);
     }
   }
 };

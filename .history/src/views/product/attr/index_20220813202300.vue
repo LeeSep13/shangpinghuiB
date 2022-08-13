@@ -2,7 +2,7 @@
  * @Author: Lee && lsh133417@163.com
  * @Date: 2022-08-11 16:21:47
  * @LastEditors: Lee && lsh133417@163.com
- * @LastEditTime: 2022-08-13 21:13:59
+ * @LastEditTime: 2022-08-13 20:19:32
  * @FilePath: \shangpinghui-bs\src\views\product\attr\index.vue
  * @Description:
  * Copyright (c) 2022 by Lee email: lsh133417@163.com, All Rights Reserved.
@@ -10,7 +10,7 @@
 <template>
   <div>
     <el-card style="margin:20px 0px">
-      <CategorySelect @getCategoryId="getCategoryId" :show="!isShowTable" />
+      <CategorySelect @getCategoryId="getCategoryId" />
     </el-card>
     <el-card>
       <div v-show="isShowTable">
@@ -30,7 +30,7 @@
           <el-table-column prop="prop" label="操作" width="150">
             <template slot-scope="{row,$index}">
               <el-button type="warning" icon="el-icon-edit" size="mini" @click="updateAttr(row)"></el-button>
-              <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteAttr(row)"></el-button>
+              <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -59,14 +59,14 @@
           <el-table-column prop="prop" label="操作">
             <template slot-scope="{row,$index}">
               <!-- 气泡确认框 -->
-              <el-popconfirm :title="`确定删除${row.valueName}吗？`" @onConfirm="deleteAttrValue($index)">
+              <el-popconfirm :title="`确定删除${row.valueName}吗？`" @onConfirm="deleteAttrValue">
                 <el-button type="danger" icon="el-icon-delete" size="mini" slot="reference">
                 </el-button>
               </el-popconfirm>
             </template>
           </el-table-column>
         </el-table>
-        <el-button type="primary" @click="addOrUpdateAttr" :disabled="attrInfo.attrValueList.length < 1">保存</el-button>
+        <el-button type="primary">保存</el-button>
         <el-button @click="isShowTable = true">取消</el-button>
       </div>
     </el-card>
@@ -201,61 +201,9 @@ export default {
         this.$refs[index].focus();
       })
     },
-    // 气泡确认框确定按钮的回调
-    // 目前模板中的版本号2.13.2是旧版本
-    deleteAttrValue(index) {
-      // 当前删除属性值的操作是不需要发请求的
-      this.attrInfo.attrValueList.splice(index, 1)
-    },
-    // 保存按钮，进行添加属性|修改属性的操作
-    async addOrUpdateAttr() {
-      // 整理参数：1.如果用户添加很多空属性值不应该提交给服务器
-      // 提交给服务器数据当中不可以出现flag字段
-      this.attrInfo.attrValueList = this.attrInfo.attrValueList.filter(item => {
-        // 过滤掉非空属性值
-        if (item.valueName != '') {
-          // 删除掉flag属性
-          delete item.flag;
-          return true;
-        }
-      })
-      try {
-        // 发请求
-        await this.$API.attr.reqAddOrUpdateAttr(this.attrInfo)
-        this.isShowTable = true;
-        // 提示消息
-        this.$message({ type: 'success', message: '保存成功' });
-        // 保存成功以后需要再次获取平台属性进行展示
-        this.getAttrList();
-      } catch (error) {
-        this.$message('保存失败')
-      }
-    },
-    // 删除属性
-    deleteAttr(row) {
-      // 弹框
-      this.$confirm(`你确定删除${row.attrName}?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(async () => {
-        // 当用户点击确定按钮的时候触发
-        // 向服务器发请求
-        let result = await this.$API.attr.reqDeleteAttr(row.id);
-        if (result.code == 200) {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
-          this.getAttrList();
-        }
-      }).catch(() => {
-        // 当用户点击取消按钮的时候触发
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });
-      });
+    //
+    deleteAttrValue() {
+      alert(111)
     }
   }
 };

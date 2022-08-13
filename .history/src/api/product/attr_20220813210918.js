@@ -30,5 +30,5 @@ export const reqAddOrUpdateAttr = (data) =>
   request({ url: "/admin/product/saveAttrInfo", method: "post", data });
 
 // 删除属性的接口
-export const reqDeleteAttr = (attrId) =>
+export const reqDeleteAttr = (id) =>
   request({ url: `/admin/product/deleteAttr/${attrId}`, method: "delete" });

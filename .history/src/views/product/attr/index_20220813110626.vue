@@ -2,7 +2,7 @@
  * @Author: Lee && lsh133417@163.com
  * @Date: 2022-08-11 16:21:47
  * @LastEditors: Lee && lsh133417@163.com
- * @LastEditTime: 2022-08-13 21:13:59
+ * @LastEditTime: 2022-08-13 11:06:26
  * @FilePath: \shangpinghui-bs\src\views\product\attr\index.vue
  * @Description:
  * Copyright (c) 2022 by Lee email: lsh133417@163.com, All Rights Reserved.
@@ -10,7 +10,7 @@
 <template>
   <div>
     <el-card style="margin:20px 0px">
-      <CategorySelect @getCategoryId="getCategoryId" :show="!isShowTable" />
+      <CategorySelect @getCategoryId="getCategoryId" />
     </el-card>
     <el-card>
       <div v-show="isShowTable">
@@ -30,7 +30,7 @@
           <el-table-column prop="prop" label="操作" width="150">
             <template slot-scope="{row,$index}">
               <el-button type="warning" icon="el-icon-edit" size="mini" @click="updateAttr(row)"></el-button>
-              <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteAttr(row)"></el-button>
+              <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -50,23 +50,19 @@
           <el-table-column prop="prop" label="属性值名称">
             <template slot-scope="{row,$index}">
               <!-- 这里结构需要用到span与input进行来回的切换 -->
-              <el-input v-model.trim="row.valueName" placeholder="请输入属性值名称" size="mini" v-if="row.flag"
-                @blur="toLook(row)" @keyup.native.enter="toLook(row)" :ref="$index">
+              <el-input v-model="row.valueName" placeholder="请输入属性值名称" size="mini" v-if="row.flag" @blur="toLook(row)"
+                @keyup.native.enter="toLook(row)">
               </el-input>
-              <span v-else @click="toEdit(row, $index)" style="display:block">{{ row.valueName }}</span>
+              <span v-else @click="row.flag = true" style="display:block">{{ row.valueName }}</span>
             </template>
           </el-table-column>
           <el-table-column prop="prop" label="操作">
             <template slot-scope="{row,$index}">
-              <!-- 气泡确认框 -->
-              <el-popconfirm :title="`确定删除${row.valueName}吗？`" @onConfirm="deleteAttrValue($index)">
-                <el-button type="danger" icon="el-icon-delete" size="mini" slot="reference">
-                </el-button>
-              </el-popconfirm>
+              <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
             </template>
           </el-table-column>
         </el-table>
-        <el-button type="primary" @click="addOrUpdateAttr" :disabled="attrInfo.attrValueList.length < 1">保存</el-button>
+        <el-button type="primary">保存</el-button>
         <el-button @click="isShowTable = true">取消</el-button>
       </div>
     </el-card>
@@ -130,19 +126,15 @@ export default {
       // 向属性值的数组里面添加元素
       /*
        attrId:是相应属性的id，添加属性的操作，还没有相应属性的id，所以带给服务器的id为undefined
-       valueName:相应的属性值名称
+       ValueName:相应的属性值名称
        flag:给每一个属性值添加一个标记flag，用户切换查看模式与编辑模式，
             好处：每一个属性值可以控制自己的模式切换
             当前flag属性是响应式数据
         */
       this.attrInfo.attrValueList.push({
         attrId: this.attrInfo.id,
-        valueName: '',
+        ValueName: '',
         flag: true,
-      });
-      this.$nextTick(() => {
-        // 获取相应的input表单元素实现聚焦
-        this.$refs[this.attrInfo.attrValueList.length - 1].focus();
       })
     },
     // 添加属性按钮的回调
@@ -164,98 +156,16 @@ export default {
       // 将选中的属性赋值给attrInfo
       // 由于数据结构当中存在对象里面套数组，数组里面套对象，因为需要用深拷贝解决此类问题
       this.attrInfo = cloneDeep(row);
-      // 在修改某一个属性的时候，将相应的属性值元素添加上flag这个标记
-      this.attrInfo.attrValueList.forEach(item => {
-        // 因为Vue无法探测普通的新增property，这样书写的属性不是响应式属性
-        // 所以用$set,第一个参数：对象  第二个参数：添加新的响应式属性  第三个参数：新的属性的属性值
-        this.$set(item, 'flag', false);
-      })
     },
     // 失去焦点的事件---切换为查看模式，展示span
     toLook(row) {
       // 如果属性值为空不能作为新的属性值，需要给用户提示，输入一个其他的属性值
-      if (row.valueName.trim() == '') {
+      if (row.ValueName.trim() == '') {
         this.$message('请你输入一个正常的属性值');
         return;
       }
-      // 新增的属性值不能与已有的属性值重复
-      let isRepat = this.attrInfo.attrValueList.some(item => {
-        // 需要将row从数组里面判断的时候去除
-        // row是最新新增的属性值【数组的最后一项元素】
-        // 判断的时候，需要把已有的数组当中新增的这个属性值去除
-        if (row !== item) {
-          return row.valueName.trim() == item.valueName;
-        }
-      })
-      if (isRepat) return;
       // row：形参是当前用户添加的最新的属性值
       row.flag = false;
-    },
-    // 点击span的回调---切换为编辑模式
-    toEdit(row, index) {
-      row.flag = true;
-      // 获取input焦点，实现自动聚焦
-      // 点击span的时候，重绘重排一个input需要耗费时间，因此不可能一点击span立马获取到input
-      this.$nextTick(() => {
-        // 获取相应的input表单元素实现聚焦
-        this.$refs[index].focus();
-      })
-    },
-    // 气泡确认框确定按钮的回调
-    // 目前模板中的版本号2.13.2是旧版本
-    deleteAttrValue(index) {
-      // 当前删除属性值的操作是不需要发请求的
-      this.attrInfo.attrValueList.splice(index, 1)
-    },
-    // 保存按钮，进行添加属性|修改属性的操作
-    async addOrUpdateAttr() {
-      // 整理参数：1.如果用户添加很多空属性值不应该提交给服务器
-      // 提交给服务器数据当中不可以出现flag字段
-      this.attrInfo.attrValueList = this.attrInfo.attrValueList.filter(item => {
-        // 过滤掉非空属性值
-        if (item.valueName != '') {
-          // 删除掉flag属性
-          delete item.flag;
-          return true;
-        }
-      })
-      try {
-        // 发请求
-        await this.$API.attr.reqAddOrUpdateAttr(this.attrInfo)
-        this.isShowTable = true;
-        // 提示消息
-        this.$message({ type: 'success', message: '保存成功' });
-        // 保存成功以后需要再次获取平台属性进行展示
-        this.getAttrList();
-      } catch (error) {
-        this.$message('保存失败')
-      }
-    },
-    // 删除属性
-    deleteAttr(row) {
-      // 弹框
-      this.$confirm(`你确定删除${row.attrName}?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(async () => {
-        // 当用户点击确定按钮的时候触发
-        // 向服务器发请求
-        let result = await this.$API.attr.reqDeleteAttr(row.id);
-        if (result.code == 200) {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
-          this.getAttrList();
-        }
-      }).catch(() => {
-        // 当用户点击取消按钮的时候触发
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });
-      });
     }
   }
 };
