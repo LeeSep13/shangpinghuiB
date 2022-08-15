@@ -185,13 +185,11 @@ export default {
       }
     },
     // 关闭对话框的回调
-    close(done) {
+    close() {
       // loading属性再次变为真
       this.loading = true;
       // 清除sku列表的数据
       this.skuList = [];
-      // 关闭对话框
-      done();
     }
   },
 };

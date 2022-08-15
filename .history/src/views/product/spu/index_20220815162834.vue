@@ -2,7 +2,7 @@
  * @Author: Lee && lsh133417@163.com
  * @Date: 2022-08-11 16:21:47
  * @LastEditors: Lee && lsh133417@163.com
- * @LastEditTime: 2022-08-15 22:21:11
+ * @LastEditTime: 2022-08-15 16:28:34
  * @FilePath: \shangpinghui-bs\src\views\product\spu\index.vue
  * @Description:
  * Copyright (c) 2022 by Lee email: lsh133417@163.com, All Rights Reserved.
@@ -26,8 +26,7 @@
               </hint-button>
               <hint-button type="warning" icon="el-icon-edit" size="mini" title="修改spu" @click="updataSpu(row)">
               </hint-button>
-              <hint-button type="info" icon="el-icon-info" size="mini" title="查看当前spu全部sku列表" @click="handler(row)">
-              </hint-button>
+              <hint-button type="info" icon="el-icon-info" size="mini" title="查看当前spu全部sku列表"></hint-button>
               <el-popconfirm title="这是一段内容确定删除吗？" @onConfirm="deleteSpu(row)">
                 <hint-button type="danger" icon="el-icon-delete" size="mini" title="删除spu" slot="reference">
                 </hint-button>
@@ -40,21 +39,8 @@
           @size-change="handleSizeChange"></el-pagination>
       </div>
       <SpuForm v-show="scene == 1" @changeScene="changeScene" ref="spu" />
-      <SkuForm v-show="scene == 2" @changeScenes="changeScenes" ref="sku" />
+      <SkuForm v-show="scene == 2" ref="sku" />
     </el-card>
-    <el-dialog :title="`${spu.spuName}的sku列表`" :visible.sync="dialogTableVisible" :before-close="close">
-      <!-- tabel展示sku列表 -->
-      <el-table :data="skuList" style="width:100%" border v-loading="loading">
-        <el-table-column prop="skuName" label="名称"></el-table-column>
-        <el-table-column prop="price" label="价格"></el-table-column>
-        <el-table-column prop="weight" label="重量"></el-table-column>
-        <el-table-column label="默认图片">
-          <template slot-scope="{row,$index}">
-            <img :src="row.skuDefaultImg" style="width:100px;height:100px;" />
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-dialog>
   </div>
 </template>
 
@@ -73,11 +59,6 @@ export default {
       records: [], // spu列表的数据
       total: 0, // 分页器一共需要展示数据的条数
       scene: 0, // 0代表展示SPU列表数据  1 添加SPU|修改SPU  2 添加SKU
-      // 控制对话框的显示与隐藏
-      dialogTableVisible: false,
-      spu: {},
-      skuList: [], // 存储的是sku列表的数据
-      loading: true,
     };
   },
   components: {
@@ -138,7 +119,7 @@ export default {
       // 获取子组件SpuForm子组件的
       this.$refs.spu.initSpuData(row);
     },
-    // 自定义事件回调(SpuForm)
+    // 自定义事件回调
     changeScene({ scene, flag }) {
       // 切换结构
       this.scene = scene;
@@ -165,33 +146,6 @@ export default {
       this.scene = 2;
       // 父组件调用子组件的方法，让子组件发请求---三个请求
       this.$refs.sku.getData(this.category1Id, this.category2Id, row);
-    },
-    // skuForm通知父组件修改场景
-    changeScenes(scene) {
-      this.scene = scene;
-    },
-    // 查看SKU的按钮的回调
-    async handler(spu) {
-      // 点击这个按钮的时候，对话框可见的
-      this.dialogTableVisible = true;
-      // 保存spu信息
-      this.spu = spu;
-      // 获取sku列表的数据进行展示
-      let result = await this.$API.spu.reqSkuList(spu.id);
-      if (result.code == 200) {
-        this.skuList = result.data;
-        // loading隐藏
-        this.loading = false;
-      }
-    },
-    // 关闭对话框的回调
-    close(done) {
-      // loading属性再次变为真
-      this.loading = true;
-      // 清除sku列表的数据
-      this.skuList = [];
-      // 关闭对话框
-      done();
     }
   },
 };

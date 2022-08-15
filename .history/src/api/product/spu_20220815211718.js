@@ -2,7 +2,7 @@
  * @Author: Lee && lsh133417@163.com
  * @Date: 2022-08-11 16:52:02
  * @LastEditors: Lee && lsh133417@163.com
- * @LastEditTime: 2022-08-15 21:57:42
+ * @LastEditTime: 2022-08-15 21:17:02
  * @FilePath: \shangpinghui-bs\src\api\product\spu.js
  * @Description:
  * Copyright (c) 2022 by Lee email: lsh133417@163.com, All Rights Reserved.
@@ -73,8 +73,4 @@ export const reqAttrInfoList = (category1Id, category2Id, category3Id) =>
 
 // 添加SKU
 export const reqAddSku = (skuInfo) =>
-  request({ url: "/admin/product/saveSkuInfo", method: "post", data: skuInfo });
-
-// 获取SKU列表数据的接口
-export const reqSkuList = (spuId) =>
-  request({ url: `/admin/product/findBySpuId/${spuId}`, method: "get" });
+  request({ url: "/admin/product/saveSkuInfo", method: "post", data: spuInfo });

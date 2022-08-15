@@ -2,7 +2,7 @@
  * @Author: Lee && lsh133417@163.com
  * @Date: 2022-08-14 11:11:46
  * @LastEditors: Lee && lsh133417@163.com
- * @LastEditTime: 2022-08-15 21:54:07
+ * @LastEditTime: 2022-08-15 17:36:59
  * @FilePath: \shangpinghui-bs\src\views\product\spu\SkuForm\index.vue
  * @Description:
  * Copyright (c) 2022 by Lee email: lsh133417@163.com, All Rights Reserved.
@@ -35,34 +35,24 @@
       </el-form-item>
       <el-form-item label="销售属性">
         <el-form :inline="true" ref="form" label-width="80px">
-          <el-form-item :label="saleAttr.saleAttrName" v-for="(saleAttr, index) in spuSaleAttrList" :key="saleAttr.id">
-            <el-select placeholder="请选择" v-model="saleAttr.attrIdAndValueId">
-              <el-option :label="saleAttrValue.saleAttrValueName" :value="`${saleAttr.id}:${saleAttrValue.id}`"
-                v-for="(saleAttrValue, index) in saleAttr.spuSaleAttrValueList" :key="saleAttrValue.id"></el-option>
+          <el-form-item label="屏幕尺寸">
+            <el-select placeholder="请选择" value="">
+              <el-option label="label" value="value"></el-option>
             </el-select>
           </el-form-item>
         </el-form>
       </el-form-item>
       <el-form-item label="图片列表">
-        <el-table style="width: 100%" border :data="spuImageList" @selection-change="handleSelectionChange">
-          <el-table-column type="selection" prop="prop" width="80px"></el-table-column>
-          <el-table-column prop="prop" label="图片">
-            <template slot-scope="{row,$index}">
-              <img :src="row.imgUrl" style="width:100px;height:100px" />
-            </template>
-          </el-table-column>
-          <el-table-column prop="imgName" label="名称"></el-table-column>
-          <el-table-column prop="prop" label="操作">
-            <template slot-scope="{row,$index}">
-              <el-button type="primary" v-if="row.isDefault == 0" @click="changeDefault(row)">设为默认</el-button>
-              <el-tag type="success" v-else>默认</el-tag>
-            </template>
-          </el-table-column>
+        <el-table style="width: 100%" border>
+          <el-table-column type="selection" prop="prop" label="" width="80px"></el-table-column>
+          <el-table-column prop="prop" label="图片"></el-table-column>
+          <el-table-column prop="prop" label="名称"></el-table-column>
+          <el-table-column prop="prop" label="操作"></el-table-column>
         </el-table>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="save">保存</el-button>
-        <el-button @click="cancel">取消</el-button>
+        <el-button type="primary">保存</el-button>
+        <el-button>取消</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -127,8 +117,6 @@ export default {
 
       },
       spu: {},
-      // 收集图片的数据字段,但注意收集数据缺少isDefault字段，将来提交服务器时整理参数
-      imageList: [],
     };
   },
   methods: {
@@ -140,88 +128,25 @@ export default {
       this.skuInfo.tmId = spu.tmId;
       this.spu = spu;
       // 获取图片的数据
-      let ImageResult = await this.$API.spu.reqSpuImageList(spu.id);
+      let ImageResult = await this.$API.sku.reqSpuImageList(spu.id);
       if (ImageResult.code == 200) {
-        let list = ImageResult.data;
-        list.forEach(item => {
-          item.isDefault = 0;
-        });
-        this.spuImageList = list;
+        this.spuImageList = ImageResult.data;
       }
       // 获取销售属性的数据
-      let SaleAttrResult = await this.$API.spu.reqSpuSaleAttrList(spu.id);
+      let SaleAttrResult = await this.$API.sku.reqSpuSaleAttrList(spu.id);
       if (SaleAttrResult.code == 200) {
-        this.spuSaleAttrList = SaleAttrResult.data;
+        this.spuImageList = SaleAttrResult.data;
       }
       // 获取平台属性的数据
-      let AttrInfoResult = await this.$API.spu.reqAttrInfoList(
+      let AttrInfoResult = await this.$API.sku.reqAttrInfoList(
         category1Id,
         category2Id,
         spu.category3Id
       );
       if (AttrInfoResult.code == 200) {
-        this.attrInfoList = AttrInfoResult.data;
+        this.spuImageList = AttrInfoResult.data;
       }
     },
-    // table表格复选框按钮事件
-    handleSelectionChange(params) {
-      // 获取到用户选中图片的数据，但注意，当前收集数据当中，缺少isDefault字段
-      this.imageList = params;
-    },
-    // 排他操作
-    changeDefault(row) {
-      // 图片列表的数据的isDefault字段变为0
-      this.spuImageList.forEach(item => {
-        item.isDefault = 0;
-      });
-      // 点击的那个图片数据变为1
-      row.isDefault = 1;
-      // 收集默认图片的地址
-      this.skuInfo.skuDefaultImg = row.imgUrl;
-    },
-    cancel() {
-      // 自定义事件，让父组件切换场景0
-      this.$emit('changeScenes', 0)
-      // 清除数据
-      Object.assign(this._data, this.$options.data())
-    },
-    // 保存按钮的事件
-    async save() {
-      // 整理参数
-      // 整理平台属性
-      const { attrInfoList, skuInfo, spuSaleAttrList } = this;
-      // 整理平台属性的数据
-      skuInfo.skuAttrValueList = attrInfoList.reduce((prev, item) => {
-        if (item.attrIdAndValueId) {
-          const [attrId, valueId] = item.attrIdAndValueId.split(":");
-          prev.push({ attrId, valueId });
-        }
-        return prev;
-      }, [])
-      // 整理销售属性
-      skuInfo.skuSaleAttrValueList = spuSaleAttrList.reduce((prev, item) => {
-        if (item.attrIdAndValueId) {
-          const [saleAttrId, saleAttrValueId] = item.attrIdAndValueId.split(":");
-          prev.push({ saleAttrId, saleAttrValueId });
-        }
-        return prev;
-      }, []);
-      // 整理图片的数据
-      skuInfo.skuImageList = this.imageList.map(item => {
-        return {
-          imgName: item.imgName,
-          imgUrl: item.imgUrl,
-          isDefault: item.isDefault,
-          spuImgId: item.id,
-        }
-      })
-      // 发请求
-      let result = await this.$API.spu.reqAddSku(skuInfo);
-      if (result.code == 200) {
-        this.$message({ type: 'success', message: "添加SKU成功" })
-        this.$emit('changeScenes', 0)
-      }
-    }
   },
 };
 </script>

@@ -2,7 +2,7 @@
  * @Author: Lee && lsh133417@163.com
  * @Date: 2022-08-14 11:11:46
  * @LastEditors: Lee && lsh133417@163.com
- * @LastEditTime: 2022-08-15 21:54:07
+ * @LastEditTime: 2022-08-15 18:08:38
  * @FilePath: \shangpinghui-bs\src\views\product\spu\SkuForm\index.vue
  * @Description:
  * Copyright (c) 2022 by Lee email: lsh133417@163.com, All Rights Reserved.
@@ -61,8 +61,8 @@
         </el-table>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="save">保存</el-button>
-        <el-button @click="cancel">取消</el-button>
+        <el-button type="primary">保存</el-button>
+        <el-button>取消</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -140,7 +140,7 @@ export default {
       this.skuInfo.tmId = spu.tmId;
       this.spu = spu;
       // 获取图片的数据
-      let ImageResult = await this.$API.spu.reqSpuImageList(spu.id);
+      let ImageResult = await this.$API.sku.reqSpuImageList(spu.id);
       if (ImageResult.code == 200) {
         let list = ImageResult.data;
         list.forEach(item => {
@@ -149,18 +149,18 @@ export default {
         this.spuImageList = list;
       }
       // 获取销售属性的数据
-      let SaleAttrResult = await this.$API.spu.reqSpuSaleAttrList(spu.id);
+      let SaleAttrResult = await this.$API.sku.reqSpuSaleAttrList(spu.id);
       if (SaleAttrResult.code == 200) {
-        this.spuSaleAttrList = SaleAttrResult.data;
+        this.spuImageList = SaleAttrResult.data;
       }
       // 获取平台属性的数据
-      let AttrInfoResult = await this.$API.spu.reqAttrInfoList(
+      let AttrInfoResult = await this.$API.sku.reqAttrInfoList(
         category1Id,
         category2Id,
         spu.category3Id
       );
       if (AttrInfoResult.code == 200) {
-        this.attrInfoList = AttrInfoResult.data;
+        this.spuImageList = AttrInfoResult.data;
       }
     },
     // table表格复选框按钮事件
@@ -178,49 +178,6 @@ export default {
       row.isDefault = 1;
       // 收集默认图片的地址
       this.skuInfo.skuDefaultImg = row.imgUrl;
-    },
-    cancel() {
-      // 自定义事件，让父组件切换场景0
-      this.$emit('changeScenes', 0)
-      // 清除数据
-      Object.assign(this._data, this.$options.data())
-    },
-    // 保存按钮的事件
-    async save() {
-      // 整理参数
-      // 整理平台属性
-      const { attrInfoList, skuInfo, spuSaleAttrList } = this;
-      // 整理平台属性的数据
-      skuInfo.skuAttrValueList = attrInfoList.reduce((prev, item) => {
-        if (item.attrIdAndValueId) {
-          const [attrId, valueId] = item.attrIdAndValueId.split(":");
-          prev.push({ attrId, valueId });
-        }
-        return prev;
-      }, [])
-      // 整理销售属性
-      skuInfo.skuSaleAttrValueList = spuSaleAttrList.reduce((prev, item) => {
-        if (item.attrIdAndValueId) {
-          const [saleAttrId, saleAttrValueId] = item.attrIdAndValueId.split(":");
-          prev.push({ saleAttrId, saleAttrValueId });
-        }
-        return prev;
-      }, []);
-      // 整理图片的数据
-      skuInfo.skuImageList = this.imageList.map(item => {
-        return {
-          imgName: item.imgName,
-          imgUrl: item.imgUrl,
-          isDefault: item.isDefault,
-          spuImgId: item.id,
-        }
-      })
-      // 发请求
-      let result = await this.$API.spu.reqAddSku(skuInfo);
-      if (result.code == 200) {
-        this.$message({ type: 'success', message: "添加SKU成功" })
-        this.$emit('changeScenes', 0)
-      }
     }
   },
 };

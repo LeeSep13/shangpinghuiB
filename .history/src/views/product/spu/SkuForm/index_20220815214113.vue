@@ -2,7 +2,7 @@
  * @Author: Lee && lsh133417@163.com
  * @Date: 2022-08-14 11:11:46
  * @LastEditors: Lee && lsh133417@163.com
- * @LastEditTime: 2022-08-15 21:54:07
+ * @LastEditTime: 2022-08-15 21:41:13
  * @FilePath: \shangpinghui-bs\src\views\product\spu\SkuForm\index.vue
  * @Description:
  * Copyright (c) 2022 by Lee email: lsh133417@163.com, All Rights Reserved.
@@ -186,41 +186,17 @@ export default {
       Object.assign(this._data, this.$options.data())
     },
     // 保存按钮的事件
-    async save() {
+    save() {
       // 整理参数
       // 整理平台属性
-      const { attrInfoList, skuInfo, spuSaleAttrList } = this;
+      const { attrInfoList, skuInfo } = this;
       // 整理平台属性的数据
       skuInfo.skuAttrValueList = attrInfoList.reduce((prev, item) => {
         if (item.attrIdAndValueId) {
           const [attrId, valueId] = item.attrIdAndValueId.split(":");
           prev.push({ attrId, valueId });
         }
-        return prev;
       }, [])
-      // 整理销售属性
-      skuInfo.skuSaleAttrValueList = spuSaleAttrList.reduce((prev, item) => {
-        if (item.attrIdAndValueId) {
-          const [saleAttrId, saleAttrValueId] = item.attrIdAndValueId.split(":");
-          prev.push({ saleAttrId, saleAttrValueId });
-        }
-        return prev;
-      }, []);
-      // 整理图片的数据
-      skuInfo.skuImageList = this.imageList.map(item => {
-        return {
-          imgName: item.imgName,
-          imgUrl: item.imgUrl,
-          isDefault: item.isDefault,
-          spuImgId: item.id,
-        }
-      })
-      // 发请求
-      let result = await this.$API.spu.reqAddSku(skuInfo);
-      if (result.code == 200) {
-        this.$message({ type: 'success', message: "添加SKU成功" })
-        this.$emit('changeScenes', 0)
-      }
     }
   },
 };

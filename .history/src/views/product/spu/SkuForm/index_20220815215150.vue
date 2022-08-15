@@ -2,7 +2,7 @@
  * @Author: Lee && lsh133417@163.com
  * @Date: 2022-08-14 11:11:46
  * @LastEditors: Lee && lsh133417@163.com
- * @LastEditTime: 2022-08-15 21:54:07
+ * @LastEditTime: 2022-08-15 21:51:50
  * @FilePath: \shangpinghui-bs\src\views\product\spu\SkuForm\index.vue
  * @Description:
  * Copyright (c) 2022 by Lee email: lsh133417@163.com, All Rights Reserved.
@@ -186,7 +186,7 @@ export default {
       Object.assign(this._data, this.$options.data())
     },
     // 保存按钮的事件
-    async save() {
+    save() {
       // 整理参数
       // 整理平台属性
       const { attrInfoList, skuInfo, spuSaleAttrList } = this;
@@ -215,12 +215,6 @@ export default {
           spuImgId: item.id,
         }
       })
-      // 发请求
-      let result = await this.$API.spu.reqAddSku(skuInfo);
-      if (result.code == 200) {
-        this.$message({ type: 'success', message: "添加SKU成功" })
-        this.$emit('changeScenes', 0)
-      }
     }
   },
 };

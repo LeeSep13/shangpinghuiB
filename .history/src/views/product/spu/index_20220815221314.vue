@@ -2,7 +2,7 @@
  * @Author: Lee && lsh133417@163.com
  * @Date: 2022-08-11 16:21:47
  * @LastEditors: Lee && lsh133417@163.com
- * @LastEditTime: 2022-08-15 22:21:11
+ * @LastEditTime: 2022-08-15 22:13:07
  * @FilePath: \shangpinghui-bs\src\views\product\spu\index.vue
  * @Description:
  * Copyright (c) 2022 by Lee email: lsh133417@163.com, All Rights Reserved.
@@ -42,9 +42,9 @@
       <SpuForm v-show="scene == 1" @changeScene="changeScene" ref="spu" />
       <SkuForm v-show="scene == 2" @changeScenes="changeScenes" ref="sku" />
     </el-card>
-    <el-dialog :title="`${spu.spuName}的sku列表`" :visible.sync="dialogTableVisible" :before-close="close">
+    <el-dialog :title="`${spu.spuName}的sku列表`" :visible.sync="dialogTableVisible">
       <!-- tabel展示sku列表 -->
-      <el-table :data="skuList" style="width:100%" border v-loading="loading">
+      <el-table :data="skuList" style="width:100%" border>
         <el-table-column prop="skuName" label="名称"></el-table-column>
         <el-table-column prop="price" label="价格"></el-table-column>
         <el-table-column prop="weight" label="重量"></el-table-column>
@@ -76,8 +76,7 @@ export default {
       // 控制对话框的显示与隐藏
       dialogTableVisible: false,
       spu: {},
-      skuList: [], // 存储的是sku列表的数据
-      loading: true,
+      skuList: [] // 存储的是sku列表的数据
     };
   },
   components: {
@@ -180,18 +179,7 @@ export default {
       let result = await this.$API.spu.reqSkuList(spu.id);
       if (result.code == 200) {
         this.skuList = result.data;
-        // loading隐藏
-        this.loading = false;
       }
-    },
-    // 关闭对话框的回调
-    close(done) {
-      // loading属性再次变为真
-      this.loading = true;
-      // 清除sku列表的数据
-      this.skuList = [];
-      // 关闭对话框
-      done();
     }
   },
 };
