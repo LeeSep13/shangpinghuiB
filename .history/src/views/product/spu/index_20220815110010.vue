@@ -2,7 +2,7 @@
  * @Author: Lee && lsh133417@163.com
  * @Date: 2022-08-11 16:21:47
  * @LastEditors: Lee && lsh133417@163.com
- * @LastEditTime: 2022-08-15 15:49:04
+ * @LastEditTime: 2022-08-15 11:00:10
  * @FilePath: \shangpinghui-bs\src\views\product\spu\index.vue
  * @Description:
  * Copyright (c) 2022 by Lee email: lsh133417@163.com, All Rights Reserved.
@@ -22,14 +22,11 @@
           <el-table-column prop="description" label="SPU描述"></el-table-column>
           <el-table-column label="操作">
             <template slot-scope="{row,$index}">
-              <hint-button type="success" icon="el-icon-plus" size="mini" title="添加sku"></hint-button>
+              <hint-button type="success" icon="el-icon-plus" size="mini" title="删除spu"></hint-button>
               <hint-button type="warning" icon="el-icon-edit" size="mini" title="修改spu" @click="updataSpu(row)">
               </hint-button>
-              <hint-button type="info" icon="el-icon-info" size="mini" title="查看当前spu全部sku列表"></hint-button>
-              <el-popconfirm title="这是一段内容确定删除吗？" @onConfirm="deleteSpu(row)">
-                <hint-button type="danger" icon="el-icon-delete" size="mini" title="删除spu" slot="reference">
-                </hint-button>
-              </el-popconfirm>
+              <hint-button type="info" icon="el-icon-info" size="mini" title="添加sku"></hint-button>
+              <hint-button type="danger" icon="el-icon-delete" size="mini" title="查看当前spu全部sku列表"></hint-button>
             </template>
           </el-table-column>
         </el-table>
@@ -119,7 +116,7 @@ export default {
       this.$refs.spu.initSpuData(row);
     },
     // 自定义事件回调
-    changeScene({ scene, flag }) {
+    changeScene(scene, flag) {
       // 切换结构
       this.scene = scene;
       // 子组件通知父组件切换场景，需要再次获取SPU列表的数据进行展示
@@ -129,15 +126,6 @@ export default {
         this.getSpuList();
       }
 
-    },
-    // 删除SPU的回调
-    async deleteSpu(row) {
-      let result = await this.$API.spu.reqDeleteSpu(row.id);
-      if (result.code == 200) {
-        this.$message({ type: 'success', message: '删除成功' })
-        // 代表SPU个数大于1删除的时候停留在当前页，如果SPU个数小于1回到上一页
-        this.getSpuList(this.records.length > 1 ? this.page : this.page - 1);
-      }
     }
   },
 };

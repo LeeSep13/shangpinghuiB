@@ -2,7 +2,7 @@
  * @Author: Lee && lsh133417@163.com
  * @Date: 2022-08-11 16:52:02
  * @LastEditors: Lee && lsh133417@163.com
- * @LastEditTime: 2022-08-15 15:41:18
+ * @LastEditTime: 2022-08-15 10:11:22
  * @FilePath: \shangpinghui-bs\src\api\product\spu.js
  * @Description:
  * Copyright (c) 2022 by Lee email: lsh133417@163.com, All Rights Reserved.
@@ -56,7 +56,3 @@ export const reqAddOrUpdateSpu = (spuInfo) => {
     });
   }
 };
-
-// 删除SPU
-export const reqDeleteSpu = (spuId) =>
-  request({ url: `/admin/product/deleteSpu/${spuId}`, method: "delete" });

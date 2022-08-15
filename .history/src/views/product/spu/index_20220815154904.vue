@@ -135,7 +135,6 @@ export default {
       let result = await this.$API.spu.reqDeleteSpu(row.id);
       if (result.code == 200) {
         this.$message({ type: 'success', message: '删除成功' })
-        // 代表SPU个数大于1删除的时候停留在当前页，如果SPU个数小于1回到上一页
         this.getSpuList(this.records.length > 1 ? this.page : this.page - 1);
       }
     }

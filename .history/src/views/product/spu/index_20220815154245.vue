@@ -2,7 +2,7 @@
  * @Author: Lee && lsh133417@163.com
  * @Date: 2022-08-11 16:21:47
  * @LastEditors: Lee && lsh133417@163.com
- * @LastEditTime: 2022-08-15 15:49:04
+ * @LastEditTime: 2022-08-15 15:42:44
  * @FilePath: \shangpinghui-bs\src\views\product\spu\index.vue
  * @Description:
  * Copyright (c) 2022 by Lee email: lsh133417@163.com, All Rights Reserved.
@@ -26,9 +26,11 @@
               <hint-button type="warning" icon="el-icon-edit" size="mini" title="修改spu" @click="updataSpu(row)">
               </hint-button>
               <hint-button type="info" icon="el-icon-info" size="mini" title="查看当前spu全部sku列表"></hint-button>
-              <el-popconfirm title="这是一段内容确定删除吗？" @onConfirm="deleteSpu(row)">
-                <hint-button type="danger" icon="el-icon-delete" size="mini" title="删除spu" slot="reference">
-                </hint-button>
+              <hint-button type="danger" icon="el-icon-delete" size="mini" title="删除spu" @click="deleteSpu(row)">
+              </hint-button>
+              <el-popconfirm confirm-button-text='好的' cancel-button-text='不用了' icon="el-icon-info" icon-color="red"
+                title="这是一段内容确定删除吗？">
+                <el-button slot="reference">删除</el-button>
               </el-popconfirm>
             </template>
           </el-table-column>
@@ -131,13 +133,8 @@ export default {
 
     },
     // 删除SPU的回调
-    async deleteSpu(row) {
-      let result = await this.$API.spu.reqDeleteSpu(row.id);
-      if (result.code == 200) {
-        this.$message({ type: 'success', message: '删除成功' })
-        // 代表SPU个数大于1删除的时候停留在当前页，如果SPU个数小于1回到上一页
-        this.getSpuList(this.records.length > 1 ? this.page : this.page - 1);
-      }
+    deleteSpu(row) {
+
     }
   },
 };

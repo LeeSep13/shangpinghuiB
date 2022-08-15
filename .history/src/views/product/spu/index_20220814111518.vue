@@ -2,7 +2,7 @@
  * @Author: Lee && lsh133417@163.com
  * @Date: 2022-08-11 16:21:47
  * @LastEditors: Lee && lsh133417@163.com
- * @LastEditTime: 2022-08-15 15:49:04
+ * @LastEditTime: 2022-08-14 11:15:18
  * @FilePath: \shangpinghui-bs\src\views\product\spu\index.vue
  * @Description:
  * Copyright (c) 2022 by Lee email: lsh133417@163.com, All Rights Reserved.
@@ -10,26 +10,22 @@
 <template>
   <div>
     <el-card style="margin:20px 0px">
-      <CategorySelect @getCategoryId="getCategoryId" :show="scene != 0" />
+      <CategorySelect @getCategoryId="getCategoryId" :show="!show" />
     </el-card>
     <el-card>
       <div v-show="scene == 0">
         <!-- 展示SPU列表的结构 -->
-        <el-button type="primary" icon="el-icon-plus" :disabled="!category3Id" @click="addSpu">添加SPU</el-button>
+        <el-button type="primary" icon="el-icon-plus">添加SPU</el-button>
         <el-table style="width:100%" border :data="records">
           <el-table-column type="index" label="序号" width="80" align="center"></el-table-column>
           <el-table-column prop="spuName" label="SPU名称"></el-table-column>
           <el-table-column prop="description" label="SPU描述"></el-table-column>
           <el-table-column label="操作">
             <template slot-scope="{row,$index}">
-              <hint-button type="success" icon="el-icon-plus" size="mini" title="添加sku"></hint-button>
-              <hint-button type="warning" icon="el-icon-edit" size="mini" title="修改spu" @click="updataSpu(row)">
-              </hint-button>
-              <hint-button type="info" icon="el-icon-info" size="mini" title="查看当前spu全部sku列表"></hint-button>
-              <el-popconfirm title="这是一段内容确定删除吗？" @onConfirm="deleteSpu(row)">
-                <hint-button type="danger" icon="el-icon-delete" size="mini" title="删除spu" slot="reference">
-                </hint-button>
-              </el-popconfirm>
+              <hint-button type="success" icon="el-icon-plus" size="mini" title="删除spu"></hint-button>
+              <hint-button type="warning" icon="el-icon-edit" size="mini" title="修改spu"></hint-button>
+              <hint-button type="info" icon="el-icon-info" size="mini" title="添加sku"></hint-button>
+              <hint-button type="danger" icon="el-icon-delete" size="mini" title="查看当前spu全部sku列表"></hint-button>
             </template>
           </el-table-column>
         </el-table>
@@ -37,8 +33,8 @@
           layout="prev,pager,next,jumper,->,sizes,total" style="text-align:center" @current-change="getSpuList"
           @size-change="handleSizeChange"></el-pagination>
       </div>
-      <SpuForm v-show="scene == 1" @changeScene="changeScene" ref="spu" />
-      <SkuForm v-show="scene == 2" />
+      <SpuForm />
+      <SkuForm />
     </el-card>
   </div>
 </template>
@@ -53,6 +49,8 @@ export default {
       category1Id: '',
       category2Id: '',
       category3Id: '',
+      // 三级联动的可操作性
+      show: true,
       page: 1, // 分页器当前第几页
       limit: 3, // 每一页需要展示多少条数据
       records: [], // spu列表的数据
@@ -105,39 +103,6 @@ export default {
       // 修改参数
       this.limit = limit;
       this.getSpuList();
-    },
-    // 添加SPU的按钮的回调
-    addSpu() {
-      this.scene = 1;
-      // 通知子组件SpuForm发请求--两个
-      this.$refs.spu.addSpuData(this.category3Id);
-    },
-    // 修改某一个SPU
-    updataSpu(row) {
-      this.scene = 1;
-      // 获取子组件SpuForm子组件的
-      this.$refs.spu.initSpuData(row);
-    },
-    // 自定义事件回调
-    changeScene({ scene, flag }) {
-      // 切换结构
-      this.scene = scene;
-      // 子组件通知父组件切换场景，需要再次获取SPU列表的数据进行展示
-      if (flag == "修改") {
-        this.getSpuList(this.page);
-      } else {
-        this.getSpuList();
-      }
-
-    },
-    // 删除SPU的回调
-    async deleteSpu(row) {
-      let result = await this.$API.spu.reqDeleteSpu(row.id);
-      if (result.code == 200) {
-        this.$message({ type: 'success', message: '删除成功' })
-        // 代表SPU个数大于1删除的时候停留在当前页，如果SPU个数小于1回到上一页
-        this.getSpuList(this.records.length > 1 ? this.page : this.page - 1);
-      }
     }
   },
 };
