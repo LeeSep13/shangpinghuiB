@@ -2,7 +2,7 @@
  * @Author: Lee && lsh133417@163.com
  * @Date: 2022-08-11 16:21:47
  * @LastEditors: Lee && lsh133417@163.com
- * @LastEditTime: 2022-08-16 11:30:26
+ * @LastEditTime: 2022-08-16 10:32:06
  * @FilePath: \shangpinghui-bs\src\views\product\sku\index.vue
  * @Description:
  * Copyright (c) 2022 by Lee email: lsh133417@163.com, All Rights Reserved.
@@ -27,7 +27,7 @@
           </el-button>
           <el-button type="success" icon="el-icon-top" size="mini" v-else @click="cancel(row)"></el-button>
           <el-button type="primary" icon="el-icon-edit" size="mini" @click="edit"></el-button>
-          <el-button type="info" icon="el-icon-info" size="mini" @click="getSkuInfo(row)"></el-button>
+          <el-button type="info" icon="el-icon-info" size="mini"></el-button>
           <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
         </template>
       </el-table-column>
@@ -36,40 +36,6 @@
     <el-pagination @size-change="handleSizeChange" @current-change="getSkuList" :total="total" :current-page="page"
       :page-sizes="[3, 5, 10]" :page-size="limit" layout="prev,pager,next,jumper,->,sizes,total"
       style="text-align:center"></el-pagination>
-    <!-- 抽屉效果 -->
-    <el-drawer :visible.sync="drawer" :show-close="false" size="50%">
-      <el-row>
-        <el-col :span="5">名称</el-col>
-        <el-col :span="16">{{ skuInfo.skuName }}</el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="5">描述</el-col>
-        <el-col :span="16">{{ skuInfo.skuDesc }}</el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="5">价格</el-col>
-        <el-col :span="16">{{ skuInfo.price }}元</el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="5">平台属性</el-col>
-        <el-col :span="16">
-          <template>
-            <el-tag type="success" v-for="(attr, index) in skuInfo.skuAttrValueList" :key="attr.id" size="mini"
-              style="margin-right:10px">{{ attr.attrId }}-{{ attr.valueId }}</el-tag>
-          </template>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="5">商品图片</el-col>
-        <el-col :span="12">
-          <el-carousel height="350px">
-            <el-carousel-item v-for="item in skuInfo.skuImageList" :key="item.id">
-              <img :src="item.imgUrl" style="height:350px;width: 100%;display: block;">
-            </el-carousel-item>
-          </el-carousel>
-        </el-col>
-      </el-row>
-    </el-drawer>
   </div>
 </template>
 
@@ -83,8 +49,6 @@ export default {
       limit: 10,
       records: [], // 存储SKU列表的数据
       total: 0, // 存储分页器一共展示的数据
-      skuInfo: {}, // 存储SKU信息
-      drawer: false,
     };
   },
   mounted() {
@@ -126,45 +90,9 @@ export default {
     },
     edit() {
       this.$message({ message: '正在开发中' })
-    },
-    // 获取SKU详情的方法
-    async getSkuInfo(sku) {
-      // 展示抽屉
-      this.drawer = true;
-      // 获取SKU数据
-      let result = await this.$API.sku.reqSkuById(sku.id);
-      if (result.code == 200) {
-        this.skuInfo = result.data;
-      }
     }
   },
 };
 </script>
-<style>
-.el-carousel__item:nth-child(2n) {
-  background-color: #99a9bf;
-}
-
-.el-carousel__item:nth-child(2n+1) {
-  background-color: #d3dce6;
-}
-
-.el-carousel__button {
-  width: 15px;
-  height: 15px;
-  background: red;
-  border-radius: 50%;
-}
-</style>
 <style scoped>
-.el-row .el-col-5 {
-  font-size: 18px;
-  text-align: right;
-  color: #303133;
-  font-weight: 700;
-}
-
-.el-col {
-  margin: 10px;
-}
 </style>

@@ -2,7 +2,7 @@
  * @Author: Lee && lsh133417@163.com
  * @Date: 2022-08-11 16:21:47
  * @LastEditors: Lee && lsh133417@163.com
- * @LastEditTime: 2022-08-16 11:30:26
+ * @LastEditTime: 2022-08-16 10:55:13
  * @FilePath: \shangpinghui-bs\src\views\product\sku\index.vue
  * @Description:
  * Copyright (c) 2022 by Lee email: lsh133417@163.com, All Rights Reserved.
@@ -61,10 +61,10 @@
       </el-row>
       <el-row>
         <el-col :span="5">商品图片</el-col>
-        <el-col :span="12">
-          <el-carousel height="350px">
-            <el-carousel-item v-for="item in skuInfo.skuImageList" :key="item.id">
-              <img :src="item.imgUrl" style="height:350px;width: 100%;display: block;">
+        <el-col :span="16">
+          <el-carousel height="150px">
+            <el-carousel-item v-for="item in 4" :key="item">
+
             </el-carousel-item>
           </el-carousel>
         </el-col>
@@ -140,22 +140,6 @@ export default {
   },
 };
 </script>
-<style>
-.el-carousel__item:nth-child(2n) {
-  background-color: #99a9bf;
-}
-
-.el-carousel__item:nth-child(2n+1) {
-  background-color: #d3dce6;
-}
-
-.el-carousel__button {
-  width: 15px;
-  height: 15px;
-  background: red;
-  border-radius: 50%;
-}
-</style>
 <style scoped>
 .el-row .el-col-5 {
   font-size: 18px;
@@ -166,5 +150,21 @@ export default {
 
 .el-col {
   margin: 10px;
+}
+
+.el-carousel__item h3 {
+  color: #475669;
+  font-size: 14px;
+  opacity: 0.75;
+  line-height: 150px;
+  margin: 0;
+}
+
+.el-carousel__item:nth-child(2n) {
+  background-color: #99a9bf;
+}
+
+.el-carousel__item:nth-child(2n+1) {
+  background-color: #d3dce6;
 }
 </style>

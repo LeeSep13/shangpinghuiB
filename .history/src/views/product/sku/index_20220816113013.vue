@@ -2,7 +2,7 @@
  * @Author: Lee && lsh133417@163.com
  * @Date: 2022-08-11 16:21:47
  * @LastEditors: Lee && lsh133417@163.com
- * @LastEditTime: 2022-08-16 11:30:26
+ * @LastEditTime: 2022-08-16 11:29:25
  * @FilePath: \shangpinghui-bs\src\views\product\sku\index.vue
  * @Description:
  * Copyright (c) 2022 by Lee email: lsh133417@163.com, All Rights Reserved.
@@ -64,7 +64,7 @@
         <el-col :span="12">
           <el-carousel height="350px">
             <el-carousel-item v-for="item in skuInfo.skuImageList" :key="item.id">
-              <img :src="item.imgUrl" style="height:350px;width: 100%;display: block;">
+              <img :src="item.imgUrl" style="height:350px;display: block;">
             </el-carousel-item>
           </el-carousel>
         </el-col>
