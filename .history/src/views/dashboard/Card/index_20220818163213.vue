@@ -1,0 +1,115 @@
+<!--
+ * @Author: Lee && lsh133417@163.com
+ * @Date: 2022-08-16 17:43:18
+ * @LastEditors: Lee && lsh133417@163.com
+ * @LastEditTime: 2022-08-18 16:32:13
+ * @FilePath: \shangpinghui-bs\src\views\dashboard\Card\index.vue
+ * @Description:
+ * Copyright (c) 2022 by Lee email: lsh133417@163.com, All Rights Reserved.
+-->
+<template>
+  <div>
+    <el-row :gutter="10">
+      <el-col :span="6" :xs="6" :sm="6" :md="6" :lg="6" :xl="6">
+        <el-card>
+          <Detail title="总销售额" :count="`￥${listState.salesTotal}`">
+            <template slot="charts">
+              <span class="pr">周同比</span><span>{{ listState.salesGrowthLastMonth }}%</span> <i class="el-icon-caret-top"
+                style="color:red"></i>
+              <i v-html="'\u00a0\u00a0\u00a0\u00a0'"></i>
+              <span class="pr">日同比</span><span>{{ listState.salesGrowthLastDay * -1 }}%</span><i
+                class="el-icon-caret-bottom" style="color:#48f550;"></i>
+            </template>
+            <template slot="footer">
+              <span>日销售额￥{{ listState.salesToday }}</span>
+            </template>
+          </Detail>
+        </el-card>
+      </el-col>
+      <el-col :span="6" :xs="6" :sm="6" :md="6" :lg="6" :xl="6">
+        <el-card>
+          <Detail title="访问量" :count="listState.visitTotal">
+            <template slot="charts">
+              <lineCharts :linedata="linedata" />
+            </template>
+            <template slot="footer">
+              <span class="pr">日访问量</span><span>{{ listState.visitToday }}</span>
+            </template>
+          </Detail>
+        </el-card>
+      </el-col>
+      <el-col :span="6" :xs="6" :sm="6" :md="6" :lg="6" :xl="6">
+        <el-card>
+          <Detail title="支付笔数" :count="listState.payTotal">
+            <template slot="charts">
+              <barCharts :bardata="bardata" />
+            </template>
+            <template slot="footer">
+              <span class="pr">转化率</span><span>{{ listState.payRate }}%</span>
+            </template>
+          </Detail>
+        </el-card>
+      </el-col>
+      <el-col :span="6" :xs="6" :sm="6" :md="6" :lg="6" :xl="6">
+        <el-card>
+          <Detail title="运营活动效果" :count="`${listState.activityRate}%`">
+            <template slot="charts">
+              <progressCharts :activitydata="activitydata" />
+            </template>
+            <template slot="footer">
+              <span class="pr">周同比</span><span>{{ listState.activityGrowthLastMonth }}%</span> <i
+                class="el-icon-caret-top" style="color:red"></i>
+              <i v-html="'\u00a0\u00a0\u00a0\u00a0'"></i>
+              <span class="pr">日同比</span><span>{{ listState.activityGrowthLastDay * -1 }}%</span><i
+                class="el-icon-caret-bottom" style="color:#48f550;"></i>
+            </template>
+          </Detail>
+        </el-card>
+      </el-col>
+    </el-row>
+  </div>
+</template>
+
+<script>
+import Detail from './Detail'
+import lineCharts from './lineChart'
+import barCharts from './barCharts'
+import progressCharts from './progressCharts'
+import { mapState } from 'vuex'
+export default {
+  name: 'Card',
+  components: {
+    Detail,
+    lineCharts,
+    barCharts,
+    progressCharts,
+  },
+  data() {
+    return {
+      // 访问量
+      linedata: [],
+      // 支付笔数
+      bardata: [],
+      // 运营活动效果
+      activitydata: 0,
+    }
+  },
+  computed: {
+    ...mapState({
+      listState: state => state.home.list
+    })
+  },
+  watch: {
+    listState() {
+      this.linedata = this.listState.visitTrend
+      this.bardata = this.listState.payTrend
+      this.activitydata = this.listState.activityRate
+    }
+  },
+}
+</script>
+<style>
+.pr {
+  padding-right: 1em
+}
+</style>

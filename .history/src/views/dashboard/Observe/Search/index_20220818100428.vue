@@ -1,0 +1,85 @@
+<!--
+ * @Author: Lee && lsh133417@163.com
+ * @Date: 2022-08-17 17:11:20
+ * @LastEditors: Lee && lsh133417@163.com
+ * @LastEditTime: 2022-08-18 10:03:29
+ * @FilePath: \shangpinghui-bs\src\views\dashboard\Observe\Search\index.vue
+ * @Description:
+ * Copyright (c) 2022 by Lee email: lsh133417@163.com, All Rights Reserved.
+-->
+<template>
+  <el-card>
+    <div slot="header">
+      <div class="search-header">
+        <span>线上热门搜索</span>
+        <el-dropdown>
+          <span>
+            <i class="el-icon-more"></i>
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item>黄金糕</el-dropdown-item>
+            <el-dropdown-item>狮子头</el-dropdown-item>
+            <el-dropdown-item>螺蛳粉</el-dropdown-item>
+            <el-dropdown-item>双皮奶</el-dropdown-item>
+            <el-dropdown-item>蚵仔煎</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </div>
+    </div>
+    <div>
+      <el-row :gutter="10">
+        <el-col :span="12">
+          <lineCharts />
+        </el-col>
+        <el-col :span="12">
+          <lineCharts />
+        </el-col>
+      </el-row>
+      <!-- table表格 -->
+      <el-table :data="tableData" style="width: 100%;font-size:10px" border>
+        <el-table-column label="排名" width="80" type="index">
+        </el-table-column>
+        <el-table-column label="搜索关键字" width="180">
+        </el-table-column>
+        <el-table-column label="用户数" sortable>
+        </el-table-column>
+        <el-table-column label="周涨幅" sortable>
+        </el-table-column>
+      </el-table>
+      <!-- 分页器 -->
+      <el-pagination layout="->,prev, pager, next" :total="1000" class="">
+      </el-pagination>
+    </div>
+    <el-button @click="abc">asd</el-button>
+  </el-card>
+</template>
+
+<script>
+import lineCharts from './lineCharts'
+import { mapState } from 'vuex'
+export default {
+  name: 'Search',
+  components: { lineCharts },
+  data() {
+    return {
+      tableData: [{}]
+    }
+  },
+  computed: {
+    ...mapState({
+      listState: state => state.home.list
+    })
+  },
+  mounted: {
+    abc() {
+      console.log(this.listState);
+    }
+  }
+}
+</script>
+<style scoped>
+.search-header {
+  display: flex;
+  justify-content: space-between;
+}
+</style>
